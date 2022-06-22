@@ -25,7 +25,7 @@ Agora com o acesso à placa, será necessário aumentar o espaço de armazemanto
 sudo /opt/scripts/tools/grow_partition.sh
 sudo reboot now
 ```
-Após o reboot, é possível verificar se realmente ocorreu a alocação de memória, digite o comando **'df -h'** e veja se o **'/dev/mmcblk0p1'(vulgo cartão SD)** está alocado(mounted) no **root(\)**, é possível ver também o novo espaço disponível, que será o tamanho do cartão.
+Após o reboot, é possível verificar se realmente ocorreu a alocação de memória, digite o comando **'df -h'** e veja se o **'/dev/mmcblk0p1'(vulgo cartão SD)** está alocado(mounted) no **root("\")**, é possível ver também o novo espaço disponível, que será o tamanho do cartão.
 
 Hora de configurar o acesso a internet, digite o comando **'connmanctl'** e siga os passos abaixo:
   1) **enable wifi**: normalmente o wifi já vem habilitado, é mais como uma garantia;
