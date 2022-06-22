@@ -70,14 +70,14 @@ sudo apt install curl   #se não possui o curl instalado
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 sudo apt-get update 
 sudo apt-get upgrade
-sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential  cmake
+sudo apt-get install -y python3-rosdep python3-rosinstall-generator python3-wstool python3-rosinstall build-essential  cmake
 ```
 
 Instale as dependência básicas do ROS:
 ```bash
-sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six
+sudo apt-get install python3-pip python3-setuptools python3-yaml python-distribute python3-docutils python3-dateutil python3-six
 sudo apt-get install \
-     libconsole-bridge-dev liblz4-dev checkinstall cmake \
+     libconsole-bridge-dev liblz4-dev cmake \
      python-empy python-nose libbz2-dev \
      libboost-test-dev libboost-dev  libboost-program-options-dev \
      libboost-regex-dev libboost-signals-dev \
