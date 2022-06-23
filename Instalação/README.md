@@ -130,3 +130,59 @@ echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 ```
 Digite o comando **'roscore'** ou **'roscd'** para testar se está funcionando corretamente.
 
+## Instalando os drivers e bibliotecas do kinect
+
+Desde que o repositório pré-compilada do 'apt-get' está muito desatualizada, será feito a instalação a partir da fonte seguindo os passos abaixo:
+```bash
+sudo apt-get update
+sudo apt-get install cmake build-essential libusb-1.0-0-dev
+git clone https://github.com/OpenKinect/libfreenect.git
+cd libfreenect
+mkdir build && cd build
+cmake -L ..
+make
+sudo make install
+```
+Próximo passo será instalar os pacotes ROS responsáveis pelo controle e edição de imagem do kinect. Primeiro passo é criar um espaço de trabalho para outros pacotes que não fazem parte do núcleo do ROS, então:
+```bash
+cd
+mkdir -p ~/catkin_ws/src  
+cd ~/catkin_ws/  
+catkin_make
+echo "source $HOME/catkin_ws/devel/setup.bash" >> ~/.bashrc
+echo $ROS_PACKAGE_PATH    #Para confirmar se o espaço de trabalho está conectado à configuração ROS
+```
+Para confirmar se o espaço de trabalho está conectado à configuração ROS, o resultado deverá ser algo tipo: "/home/youruser/catkin_ws/src:/opt/ros/kinetic/share". Agora na pasta 'src', clone os pacotes ROS:
+```bash
+cd src
+git clone https://github.com/ros-drivers/freenect_stack.git
+git clone https://github.com/ros-perception/image_common.git
+git clone https://github.com/ros-drivers/rgbd_launch.git
+git clone https://github.com/ros-perception/vision_opencv.git
+git clone https://github.com/ros-perception/image_pipeline.git
+git clone https://github.com/ros/geometry2.git
+cd .. 
+rosdep install --from-paths src --ignore-src  #Para checar se não há mais nenhuma dependência a ser instalada
+```
+Se tudo foi clonado com sucesso, irá ser feito o pedido para baixar o libfreekinect com apt-get, rejeite, pois já foi instalado manualmente, agora os passos finais:
+```bash
+sudo apt-get install libbullet-dev libharfbuzz-dev libgtk2.0-dev libgtk-3-dev
+
+catkin_make -j2
+```
+O processo de compilação pode demorar um pouco, mas se tu der certo, será possível lançar o kinect_stack e testar se as câmeras rgb e depth estão funcionando propriamente. Como a versão Debian do beaglebone é sem desktop, será preciso de um computador, de preferência com SO Linux, para rodar o RVIZ e ver as imagens geradas pelo kinect. Caso seu PC tenha linux, é bem fácil de achar tutoriais na internet para a instalação do ROS Melodic(tem que ser a mesma versão ROS), porém, se for Windows, é um pouco mais complicado, mas com o WSL1 (o 2 tem toda uma configuração extra a ser feita para habilitar comunicação via IP) é possível instalar o ROS e abrir o RVIZ com um pouco mais de esforço.
+
+Para fazer a comunicação mestre-servo entre o beaglebone e um computador, com o primeiro sendo o mestre, será preciso do endereço IP dos dois. O do beaglebone já é conhecido **(192.168.8.1)** e de seu PC basta digitar 'ifconfig' e ver o IP do wifi conectado. Com dois terminais do beaglebone abertos, em um digite o comando **'roscore'** e no outro o seguinte:
+```bash
+export ROS_MASTER_URI=http://192.168.8.1:11311/
+export ROS_HOSTNAME=192.168.8.1
+export ROS_IP=192.168.8.1
+roslaunch freenect_launch freenect.launch depth_registration:=true  #Com o kinect conectado e devidamente alimentado
+```
+Quando a mensagem no terminal aparecer "Stopping device RGB and Depth stream flush", indica que o kinect está pronto, mas nada está inscrito para seus tópicos ainda. Em seu PC com o ROS Melodic instalado:
+```bash
+export ROS_MASTER_URI=http://192.168.8.1:11311/   
+export ROS_IP=[your-desktop-computer-ip]
+rosrun rviz rviz
+```
+Com isso, deverá abrir uma janela do software RVIZ, onde é possível visualizar as imagens do kinect e também os mapeamentos gerado. Para facilitar todo esse processo, em vez de escrever os comando acima em cada terminal aberto, é possível escrever no arquivo bash do beaglebone e do PC, digite **'nano ~/.bashrc'** e na última linha do código acrescente os exports em seus respectivos dispositivos. Agora todo o processo será feito automaticamente ao abrir um terminal em ambos os dispositivos.
