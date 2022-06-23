@@ -117,3 +117,13 @@ sudo dphys-swapfile swapon  #ligar novamente o swap
 ```
 Para verificar se deu certo, o comando **'free -m'** mostrará os espaços de memória.
 
+Pronto, agora está tudo preparado para compilação, essa vai ser a parte mais demorada do processo de instalação, dentro da pasta ros_catkin_ws digite:
+```bash
+sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j2 -DPYTHON_EXECUTABLE=/usr/bin/python3
+```
+Após o logo processo de compilação, o ROS Melodic deverá está instalado no beaglebone, porém, para evitar realizar todo esse processo toda vez em que a placa for ligada, é preciso "source" a instalação no sistema:
+```bash
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+```
+Digite o comando **'roscore'** ou **'roscd'** para testar se está funcionando corretamente.
+
