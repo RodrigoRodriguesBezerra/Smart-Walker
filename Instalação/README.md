@@ -83,6 +83,7 @@ sudo apt-get install \
      libboost-regex-dev libboost-signals-dev \
      libtinyxml-dev libboost-filesystem-dev libxml2-dev \
      libgtest-dev
+sudo pip install --upgrade setuptools
 ```
 
 Então inicialize o rosdep e o atualize:
