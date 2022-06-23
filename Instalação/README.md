@@ -43,6 +43,8 @@ sudo apt-get upgrade
 ```
 ## Alterando versão padrão do python
 
+Esta etapa pode ser pulada, esta sessão é para o caso de ocorrer algum problema durante o processo de instalação relacionado à versão python.
+
 A versão padrão do python do sistema pode ser verificado com o comando **'python --version'**. O python 2 é uma versão descontinuada e não mais suportada, por isso é necessário definir a versão 3.7 como padrão para facilitar as compilações e codificações futuras, o comando abaixo mostra a lista de todas as versões alternativas para serem definidas como padrão, caso dê algum erro é porque não há nenhuma versão cadastrada:
 ```bash
 sudo su   #entra no modo 'root'
@@ -70,12 +72,12 @@ sudo apt install curl   #se não possui o curl instalado
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 sudo apt-get update 
 sudo apt-get upgrade
-sudo apt-get install -y python3-rosdep python3-rosinstall-generator python3-wstool python3-rosinstall build-essential  cmake
+sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential  cmake
 ```
 
 Instale as dependência básicas do ROS:
 ```bash
-sudo apt-get install python3-pip python3-setuptools python3-yaml python-distribute python3-docutils python3-dateutil python3-six
+sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six
 sudo apt-get install \
      libconsole-bridge-dev liblz4-dev cmake \
      python-empy python-nose libbz2-dev \
@@ -107,11 +109,12 @@ rosdep install -y --from-paths src --ignore-src --rosdistro melodic -r --os=debi
 ```
 Agora que todos os pacotes e dependências estão baixados, é hora de compilar a pasta catkin, porém, antes de continuar, é recomendado aumentar o espaço swap, que é usado quando todo o espaço de memória física do beaglebone é utilizada. Primeiro, desative o swap:
 ```bash
+sudo apt-get install dphys-swapfile #caso não esteja instalado
 sudo dphys-swapfile swapoff
 ```
 Então edite o seguinte arquivo para aumentar o espaço swap de 100 MB para 1024 MB (1 GB), já que 100 MB é bem pouco:
 ```bash
-sudoedit /etc/dphys-swapfile    #altere para 'CONF_SWAPSIZE=1024'
+sudoedit /etc/dphys-swapfile    #altere para 'CONF_SWAPSIZE=1024' e apague o '#'
 sudo dphys-swapfile setup   #para definir a nova alocação de memória
 sudo dphys-swapfile swapon  #ligar novamente o swap
 ```
@@ -119,7 +122,7 @@ Para verificar se deu certo, o comando **'free -m'** mostrará os espaços de me
 
 Pronto, agora está tudo preparado para compilação, essa vai ser a parte mais demorada do processo de instalação, dentro da pasta ros_catkin_ws digite:
 ```bash
-sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j2 -DPYTHON_EXECUTABLE=/usr/bin/python3
+sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j2
 ```
 Após o logo processo de compilação, o ROS Melodic deverá está instalado no beaglebone, porém, para evitar realizar todo esse processo toda vez em que a placa for ligada, é preciso "source" a instalação no sistema:
 ```bash
