@@ -186,3 +186,31 @@ export ROS_IP=[your-desktop-computer-ip]
 rosrun rviz rviz
 ```
 Com isso, deverá abrir uma janela do software RVIZ, onde é possível visualizar as imagens do kinect e também os mapeamentos gerado. Para facilitar todo esse processo, em vez de escrever os comando acima em cada terminal aberto, é possível escrever no arquivo bash do beaglebone e do PC, digite **'nano ~/.bashrc'** e na última linha do código acrescente os exports em seus respectivos dispositivos. Agora todo o processo será feito automaticamente ao abrir um terminal em ambos os dispositivos.
+
+Ainda resta algumas dependências para serem instaladas:
+```bash
+sudo apt-get install libpcl-dev
+sudo apt-get install libvtk6-dev libvtk6-qt-dev libvtk6-java libvtk6-jni
+sudo apt-get install libopencv-dev cmake libopenni2-dev libsqlite3-dev
+cd
+git clone  https://github.com/introlab/rtabmap.git
+cd rtabmap/build
+cmake ..
+make -j2
+sudo make install
+sudo ldconfig rtabmap
+```
+Agora que foi instalado a versão separada do RTAB MAP, resta o último passo de compilar e instalar o pacote ROS para o RTAB MAP, rtabmap_ros:
+```bash
+cd ~/catkin_ws/src
+git clone https://github.com/introlab/rtabmap_ros.git
+git clone https://github.com/ros-perception/perception_pcl.git
+git clone https://github.com/ros-perception/pcl_msgs.git
+git clone https://github.com/ros-planning/navigation.git
+git clone https://github.com/OctoMap/octomap_msgs.git
+git clone https://github.com/introlab/find-object.git
+rosdep install --from-paths src --ignore-src   #para saber se não há mais nenhuma dependência faltando
+sudo apt-get install libsdl-image1.2-dev
+cd ..
+catkin_make -j2
+```
