@@ -120,15 +120,15 @@ sudo dphys-swapfile swapon  #ligar novamente o swap
 ```
 Para verificar se deu certo, o comando **'free -m'** mostrará os espaços de memória.
 
-Pronto, agora está tudo preparado para compilação, essa vai ser a parte mais demorada do processo de instalação, dentro da pasta ros_catkin_ws digite:
+Pronto, agora está tudo preparado para compilação, essa vai ser a parte mais demorada, até várias horas, do processo de instalação, dentro da pasta ros_catkin_ws digite:
 ```bash
 sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j2
 ```
-Após o logo processo de compilação, o ROS Melodic deverá está instalado no beaglebone, porém, para evitar realizar todo esse processo toda vez em que a placa for ligada, é preciso "source" a instalação no sistema:
+Após o longo processo de compilação, o ROS Melodic deverá está instalado no beaglebone, porém, para evitar realizar todo esse processo toda vez em que a placa for ligada, é preciso "source" a instalação no sistema:
 ```bash
 echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 ```
-Digite o comando **'roscore'** ou **'roscd'** para testar se está funcionando corretamente.
+Reinicie a placa e digite o comando **'roscore'** ou **'roscd'** para testar se está funcionando corretamente.
 
 ## Instalando os drivers e bibliotecas do kinect
 
@@ -152,17 +152,17 @@ catkin_make
 echo "source $HOME/catkin_ws/devel/setup.bash" >> ~/.bashrc
 echo $ROS_PACKAGE_PATH    #Para confirmar se o espaço de trabalho está conectado à configuração ROS
 ```
-Para confirmar se o espaço de trabalho está conectado à configuração ROS, o resultado deverá ser algo tipo: "/home/youruser/catkin_ws/src:/opt/ros/kinetic/share". Agora na pasta 'src', clone os pacotes ROS:
+Para confirmar se o espaço de trabalho está conectado à configuração ROS, feche e abra um novo terminal, o resultado deverá ser algo tipo: "/home/youruser/catkin_ws/src:/opt/ros/kinetic/share". Agora na pasta 'src', clone os pacotes ROS:
 ```bash
-cd src
+cd ~/catkin_ws/src
 git clone https://github.com/ros-drivers/freenect_stack.git
 git clone https://github.com/ros-perception/image_common.git
 git clone https://github.com/ros-drivers/rgbd_launch.git
-git clone https://github.com/ros-perception/vision_opencv.git
+git clone -b melodic https://github.com/ros-perception/vision_opencv.git
 git clone https://github.com/ros-perception/image_pipeline.git
 git clone https://github.com/ros/geometry2.git
 cd .. 
-rosdep install --from-paths src --ignore-src  #Para checar se não há mais nenhuma dependência a ser instalada
+rosdep install --from-paths src --ignore-src -r  #Para checar se não há mais nenhuma dependência a ser instalada
 ```
 Se tudo foi clonado com sucesso, irá ser feito o pedido para baixar o libfreekinect com apt-get, rejeite, pois já foi instalado manualmente, agora os passos finais:
 ```bash
@@ -190,7 +190,7 @@ Com isso, deverá abrir uma janela do software RVIZ, onde é possível visualiza
 Ainda resta algumas dependências para serem instaladas:
 ```bash
 sudo apt-get install libpcl-dev
-sudo apt-get install libvtk6-dev libvtk6-qt-dev libvtk6-java libvtk6-jni
+#sudo apt-get install libvtk6-dev libvtk6-qt-dev libvtk6-java libvtk6-jni
 sudo apt-get install libopencv-dev cmake libopenni2-dev libsqlite3-dev
 cd
 git clone  https://github.com/introlab/rtabmap.git
